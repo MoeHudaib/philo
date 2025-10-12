@@ -18,7 +18,7 @@ SRCS :=	./validation/input_validation.c \
 all: $(NAME)
 
 $(NAME):
-	$(CC)  $(SRCS) $(LIBS) -o $@ $^
+	$(CC)  -g $(SRCS) $(LIBS) -o $@ $^
 
 clean:
 	@rm -f $(OBJS)

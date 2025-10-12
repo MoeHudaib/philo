@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   input_validation.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mohammad <mohammad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mhdeeb <mhdeeb@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 10:11:48 by mhdeeb            #+#    #+#             */
-/*   Updated: 2025/10/11 16:18:47 by mohammad         ###   ########.fr       */
+/*   Updated: 2025/10/12 11:46:11 by mhdeeb           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ int	valid(char *str)
 	int	flag3;
 
 	flag1 = is_digit(str);
-	flag3 = (ft_atoi(str) < 0);
+	flag3 = (ft_atoi(str) <= 0);
 	if (!flag1)
 		return (0);
 	if (flag3)

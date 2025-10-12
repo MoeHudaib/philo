@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   creation.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mohammad <mohammad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mhdeeb <mhdeeb@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/11 16:38:11 by mohammad          #+#    #+#             */
-/*   Updated: 2025/10/11 21:18:09 by mohammad         ###   ########.fr       */
+/*   Updated: 2025/10/12 18:16:51 by mhdeeb           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,6 @@ long long current_micros() {
     struct timeval tv;
     gettimeofday(&tv, NULL);
     return ((long long)(tv.tv_sec) * 1000000 + tv.tv_usec);
-}
-
-void	*my_f()
-{
-	return (NULL);
 }
 
 pthread_mutex_t	*forks_creation(int philo_no)
@@ -41,20 +36,24 @@ pthread_mutex_t	*forks_creation(int philo_no)
 	return (forks);
 }
 
-t_philosopher	*philo_creation(t_data *data, int i)
+t_philosopher	*philo_creation(t_data *data, int i, pthread_mutex_t *l, pthread_mutex_t *r)
 {
-	t_philosopher *philo;
+    t_philosopher *philo;
 
-	philo = malloc(sizeof(t_philosopher));
-	if (!philo)
-		return (NULL);
-	philo->id = i + 1;
-	philo->philo_no = data->philo_no;
-	philo->meals_eaten = 0;
-	philo->time_to_die = data->time_to_die;
-	philo->time_to_eat = data->time_to_eat;
-	philo->time_to_sleep = data->time_to_sleep;
-	return (philo);
+    philo = malloc(sizeof(t_philosopher));
+    if (!philo)
+        return (NULL);
+    philo->id = i + 1;
+    philo->philo_no = data->philo_no;
+    philo->meals_eaten = 0;
+	philo->died = 0;
+	philo->last_meal_time = current_micros() + data->time_to_die;
+    philo->time_to_die = data->time_to_die;
+    philo->time_to_eat = data->time_to_eat;
+    philo->time_to_sleep = data->time_to_sleep;
+    philo->left = l;
+    philo->right = r;
+    return (philo);
 }
 
 void	exit_free(int i, t_philosopher **philo, int flag)
@@ -69,29 +68,45 @@ void	exit_free(int i, t_philosopher **philo, int flag)
 		printf("Memory Allocation Failure.\n");
 }
 
-void    philo_init(t_data *data)
+philo_t	**h(mutex_p *forks, philo_t **phil, t_data *data, void *(*f)(void*))
 {
-    t_philosopher	**philosopher;
-    int		i;
+	int i;
 
 	i = 0;
-	philosopher = malloc(sizeof(t_philosopher *) * data->philo_no);
 	while (i < data->philo_no)
 	{
-		philosopher[i] = philo_creation(data, i);
-		if (!philosopher[i])
-			exit_free(i, philosopher, 1);
-		if (pthread_create(&philosopher[i]->thread, NULL, my_f, NULL) != 0)
+		phil[i] = philo_creation(data, i, &forks[(i + 1) % data->philo_no], &forks[i]);
+		if (!phil[i])
+			exit_free(i, phil, 1);
+		if (pthread_create(&phil[i]->thread, NULL, f, phil[i]) != 0)
 		{
 			perror("Thread failed to be launched");
-			exit_free(i, philosopher, 0);
+			exit_free(i, phil, 0);
 		}
 		i++;
 	}
 	i = 0;
 	while (i < data->philo_no)
 	{
-		pthread_join(philosopher[i]->thread, NULL);
+		pthread_join(phil[i]->thread, NULL);
 		i++;
     }
+	return (phil);
+}
+
+t_philosopher    **philo_init(t_data *data, void *(*f)(void*))
+{
+    t_philosopher	**philosopher;
+	pthread_mutex_t *forks;
+    int		i;
+
+	i = 0;
+    forks = forks_creation(data->philo_no);
+	if (!forks)
+		return (NULL);
+	philosopher = malloc(sizeof(t_philosopher *) * data->philo_no);
+	if (!philosopher)
+		return (NULL);
+	philosopher = h(forks, philosopher, data, f);
+	return (philosopher);
 }
