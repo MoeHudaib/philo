@@ -50,6 +50,7 @@ void	*detector(void *arg)
 
 	while (1)
 	{
+        printf("detect %d is here.\n", ps->id);
 		if (ps->last_meal_time < (current_micros() - ps->last_meal_time))
 		{
             ps->died = 1;

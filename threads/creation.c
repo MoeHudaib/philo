@@ -6,7 +6,7 @@
 /*   By: mhdeeb <mhdeeb@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/11 16:38:11 by mohammad          #+#    #+#             */
-/*   Updated: 2025/10/12 18:16:51 by mhdeeb           ###   ########.fr       */
+/*   Updated: 2025/10/12 18:55:09 by mhdeeb           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 long long current_micros() {
     struct timeval tv;
     gettimeofday(&tv, NULL);
-    return ((long long)(tv.tv_sec) * 1000000 + tv.tv_usec);
+    return ((long long)(tv.tv_sec) * 1000 + tv.tv_usec);
 }
 
 pthread_mutex_t	*forks_creation(int philo_no)

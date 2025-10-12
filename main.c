@@ -5,7 +5,7 @@ int	is_valid(int ac, char **av)
 	int i;
 
 	i = 1;
-    if (ac == 1 || ac > 6)
+    if (ac > 6 || ac < 5)
         return (0);
     while (i < ac)
     {
@@ -56,7 +56,7 @@ void    *start(void *arg)
     philo = (t_philosopher *)arg;
     i = philo->id;
 
-    while (!philo->died)
+    while (philo->last_meal_time > (current_micros() + philo->last_meal_time))
     {
         if (i % 2 == 0)
             righting(philo);
@@ -108,3 +108,4 @@ int main(int ac, char **av)
     philo = philo_init(data, start);
     init_detective(philo, data);
 }
+// Initialize the detective thread inside the routine start in order to make it have a direct access to the philo threaad!
