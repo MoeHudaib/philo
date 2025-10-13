@@ -3,7 +3,6 @@
 void    think(int id)
 {
     printf("%d is thinking.\n", id);
-    usleep(1000);
 }
 
 void    sleeping(int id, int time_to_sleep)
@@ -44,19 +43,3 @@ void    picking_status(int rtorlft, int tkorlv, int id)
     }
 }
 
-void	*detector(void *arg)
-{
-	t_philosopher	*ps = (t_philosopher *)arg;
-
-	while (1)
-	{
-        printf("detect %d is here.\n", ps->id);
-		if (ps->last_meal_time < (current_micros() - ps->last_meal_time))
-		{
-            ps->died = 1;
-            printf("philo %d has died out of starvation.\n", ps->id);
-            break;
-		}
-	}
-    return (NULL);
-}

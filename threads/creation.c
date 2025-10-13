@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   creation.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhdeeb <mhdeeb@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mohammad <mohammad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/11 16:38:11 by mohammad          #+#    #+#             */
-/*   Updated: 2025/10/12 18:55:09 by mhdeeb           ###   ########.fr       */
+/*   Updated: 2025/10/13 04:26:16 by mohammad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,12 +85,6 @@ philo_t	**h(mutex_p *forks, philo_t **phil, t_data *data, void *(*f)(void*))
 		}
 		i++;
 	}
-	i = 0;
-	while (i < data->philo_no)
-	{
-		pthread_join(phil[i]->thread, NULL);
-		i++;
-    }
 	return (phil);
 }
 

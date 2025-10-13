@@ -1,5 +1,5 @@
 #include "./threads/threads.h"
-
+int volatile death = 0;
 int	is_valid(int ac, char **av)
 {
 	int i;
@@ -56,7 +56,7 @@ void    *start(void *arg)
     philo = (t_philosopher *)arg;
     i = philo->id;
 
-    while (philo->last_meal_time > (current_micros() + philo->last_meal_time))
+    while (!death)
     {
         if (i % 2 == 0)
             righting(philo);
@@ -71,41 +71,64 @@ void    continue_(t_philosopher **philo, pthread_mutex_t *forks, t_data *data)
     return ;
 }
 
-int   init_detective(t_philosopher **d, t_data *data)
+void	*detector(void *arg)
 {
-    pthread_t   **detectives;
+	t_moe	*ps = (t_moe *)arg;
+    int     i;
+
+    i = 0;
+	while (1)
+	{
+        while (i < ps->data->philo_no)
+        {
+            if (current_micros() > (ps->philo[i]->last_meal_time - current_micros()))
+            {
+                death = 1;
+                printf("philo %d has died out of starvation.\n", ps->philo[i]->id);
+                break;
+            }
+            i = (i + 1) % ps->data->philo_no;
+        }
+        break;
+	}
+    return (NULL);
+}
+
+pthread_t   init_detective(t_moe *moe)
+{
+    pthread_t   detectives;
     int         i;
 
     i = 0;
-    detectives = malloc(sizeof(pthread_t *) * data->philo_no);
-    while (i < data->philo_no)
+    if (pthread_create(&detectives, NULL, detector, moe) != 0)
     {
-        detectives[i] = malloc(sizeof(pthread_t));
-        if (pthread_create(detectives[i], NULL, detector, d[i]) != 0)
-        {
-            perror("Thread failed to be launched");
-            return (0);
-        }
-        i++;
+        perror("Thread failed to be launched");
+        return (0);
     }
-    i = 0;
-	while (i < data->philo_no)
-	{
-		pthread_join(*detectives[i], NULL);
-		i++;
-    }
-    return (1);
+    return (detectives);
 }
 
 int main(int ac, char **av)
 {
     t_data  *data;
     t_philosopher **philo;
+    t_moe         *moe;
+    pthread_t     tez;
+
+    moe = malloc(sizeof(t_moe));
+    int     i = 0;
 
     if (!is_valid(ac, av))
         return (EXIT_FAILURE);
     data = init(ac, av);
     philo = philo_init(data, start);
-    init_detective(philo, data);
+    moe->data = data;
+    moe->philo = philo;
+    tez = init_detective(moe);
+    while (i < data->philo_no)
+	{
+		pthread_join(philo[i]->thread, NULL);
+		i++;
+    }
+    pthread_join(tez, NULL);
 }
-// Initialize the detective thread inside the routine start in order to make it have a direct access to the philo threaad!

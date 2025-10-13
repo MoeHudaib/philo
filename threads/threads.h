@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   threads.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mhdeeb <mhdeeb@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mohammad <mohammad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/11 16:34:54 by mohammad          #+#    #+#             */
-/*   Updated: 2025/10/12 18:48:52 by mhdeeb           ###   ########.fr       */
+/*   Updated: 2025/10/13 05:45:23 by mohammad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,11 @@ typedef struct s_philosopher
     pthread_t       thread;
 }                   t_philosopher;
 
+typedef struct s_moe
+{
+    t_philosopher   **philo;
+    t_data          *data;
+}   t_moe;
 typedef pthread_mutex_t mutex_p;
 typedef t_philosopher philo_t;
 
@@ -48,6 +53,6 @@ void            think(int id);
 long long       current_micros();
 t_philosopher    **philo_init(t_data *data, void *(*f)(void*));
 pthread_mutex_t *forks_creation(int philo_no);
-int   init_detective(t_philosopher **d, t_data *data);
+pthread_t   init_detective(t_moe *moe);
 
 #endif
