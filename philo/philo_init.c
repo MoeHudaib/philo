@@ -6,11 +6,17 @@
 /*   By: mhdeeb <mhdeeb@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 14:39:39 by mhdeeb            #+#    #+#             */
-/*   Updated: 2025/10/13 14:41:43 by mhdeeb           ###   ########.fr       */
+/*   Updated: 2025/10/25 13:16:32 by mhdeeb           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+int	cleanexit(t_data *data)
+{
+	free(data->forks);
+	return (0);
+}
 
 int	parse_args(t_data *data, int ac, char **av)
 {
@@ -34,9 +40,11 @@ int	init_forks_and_philos(t_data *data)
 	int	i;
 
 	data->forks = malloc(sizeof(pthread_mutex_t) * data->num_philos);
-	data->philos = malloc(sizeof(t_philo) * data->num_philos);
-	if (!data->forks || !data->philos)
+	if (!data->forks)
 		return (0);
+	data->philos = malloc(sizeof(t_philo) * data->num_philos);
+	if (!data->philos)
+		return (cleanexit(data));
 	i = 0;
 	while (i < data->num_philos)
 	{

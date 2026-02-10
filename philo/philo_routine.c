@@ -6,7 +6,7 @@
 /*   By: mhdeeb <mhdeeb@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 14:39:46 by mhdeeb            #+#    #+#             */
-/*   Updated: 2025/10/13 14:59:10 by mhdeeb           ###   ########.fr       */
+/*   Updated: 2025/10/23 09:52:13 by mhdeeb           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,6 @@ void	*philo_routine(void *arg)
 		if (data->num_philos == 1 && log_state(philo, "has taken a fork"))
 		{
 			precise_sleep(data->time_to_die * 1000, philo);
-			printf("died\n");
 			return (NULL);
 		}
 		check_left_right(philo);

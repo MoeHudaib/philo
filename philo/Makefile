@@ -2,13 +2,15 @@ NAME = philo
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -pthread
 SRC = main.c philo_utils.c philo_routine.c philo_init.c philo_routine2.c
+OBJ = $(SRC:.c=.o)
+
+$(NAME): $(OBJ)
+	$(CC) $(CFLAGS) $(OBJ) -o $(NAME)
 
 all: $(NAME)
 
-$(NAME):
-	$(CC) $(CFLAGS) $(SRC) -o $(NAME)
-
 clean:
+	rm -f $(OBJ)
 
 fclean: clean
 	rm -f $(NAME)
